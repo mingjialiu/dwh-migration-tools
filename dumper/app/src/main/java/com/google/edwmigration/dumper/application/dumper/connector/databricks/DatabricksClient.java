@@ -28,6 +28,10 @@ public class DatabricksClient {
     this.token = token;
   }
 
+  public String getBaseUrl() {
+    return baseUrl;
+  }
+
   public List<Map<String, Object>> listCatalogs() throws IOException {
     JsonNode root = getJson("/api/2.1/unity-catalog/catalogs");
     return nodeToListOfMaps(root, "catalogs");

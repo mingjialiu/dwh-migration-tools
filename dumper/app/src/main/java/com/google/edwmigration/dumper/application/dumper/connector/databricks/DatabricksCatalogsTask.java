@@ -17,7 +17,7 @@ public class DatabricksCatalogsTask extends AbstractTask<Void> {
   private final ObjectMapper mapper = new ObjectMapper();
 
   public DatabricksCatalogsTask() {
-    super("databricks-tables.jsonl");
+    super("databricks-uc.jsonl");
   }
 
   @Override
@@ -39,7 +39,7 @@ public class DatabricksCatalogsTask extends AbstractTask<Void> {
           for (Map<String, Object> table : tables) {
             // Build minimal output
             Map<String, Object> out = Map.of(
-                "workspace", client.baseUrl,
+                "workspace", client.getBaseUrl(),
                 "catalog", catalogName,
                 "schema", schemaName,
                 "table", table.get("name"),
@@ -57,6 +57,6 @@ public class DatabricksCatalogsTask extends AbstractTask<Void> {
 
   @Override
   public String toString() {
-    return "Dump Unity Catalog tables to databricks-tables.jsonl";
+    return "Dump Unity Catalog tables to databricks-uc.jsonl";
   }
 }

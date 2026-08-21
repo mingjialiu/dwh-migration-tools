@@ -17,6 +17,7 @@
 package com.google.edwmigration.dumper.application.dumper.connector.databricks;
 
 import com.google.auto.service.AutoService;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.edwmigration.dumper.application.dumper.ConnectorArguments;
 import com.google.edwmigration.dumper.application.dumper.connector.Connector;
@@ -26,7 +27,6 @@ import com.google.edwmigration.dumper.application.dumper.handle.Handle;
 import com.google.edwmigration.dumper.application.dumper.task.DumpMetadataTask;
 import com.google.edwmigration.dumper.application.dumper.task.FormatTask;
 import com.google.edwmigration.dumper.plugin.ext.jdk.annotation.Description;
-import java.io.IOException;
 import java.time.Clock;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -52,13 +52,15 @@ public class DatabricksConnector implements MetadataConnector {
 
   @Override
   public void validate(@Nonnull ConnectorArguments arguments) {
-    // Basic validation can be added here (e.g., require host/token when implemented).
+    Preconditions.checkArgument(arguments.hasUri(), "--url param is required");
   }
 
   @Override
-  public void addTasksTo(@Nonnull List<? super com.google.edwmigration.dumper.application.dumper.task.Task<?>> out, @Nonnull ConnectorArguments arguments)
+  public void addTasksTo(
+      @Nonnull List<? super com.google.edwmigration.dumper.application.dumper.task.Task<?>> out,
+      @Nonnull ConnectorArguments arguments)
       throws Exception {
-    // Add minimal tasks so the dumper pipeline plugs in. Implement real tasks later.
+    out.add(new DatabricksCatalogsTask());
     out.add(new DumpMetadataTask(getName()));
     out.add(new FormatTask(getName()));
   }
@@ -66,20 +68,13 @@ public class DatabricksConnector implements MetadataConnector {
   @Nonnull
   @Override
   public Handle open(@Nonnull ConnectorArguments arguments) throws Exception {
-    // Return a lightweight handle; replace with a real authenticated client handle.
-    return new DatabricksHandle();
+    return new DatabricksHandle(
+        new DatabricksClient(arguments.getUri(), arguments.getPasswordOrPrompt()));
   }
 
   @Nonnull
   @Override
   public Iterable<ConnectorProperty> getPropertyConstants() {
     return ImmutableList.of();
-  }
-
-  private static class DatabricksHandle implements Handle {
-    @Override
-    public void close() throws IOException {
-      // No-op for skeleton
-    }
   }
 }

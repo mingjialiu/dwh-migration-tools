@@ -44,6 +44,9 @@ public class DatabricksConnectorTest {
         tasks.stream().anyMatch(task -> task instanceof DumpMetadataTask));
     assertTrue(
         "Expected at least one FormatTask", tasks.stream().anyMatch(task -> task instanceof FormatTask));
+    assertTrue(
+        "Expected Databricks Unity Catalog task",
+        tasks.stream().anyMatch(task -> task instanceof DatabricksCatalogsTask));
 
     // Name should be the known connector name
     assertEquals("databricks", connector.getName());

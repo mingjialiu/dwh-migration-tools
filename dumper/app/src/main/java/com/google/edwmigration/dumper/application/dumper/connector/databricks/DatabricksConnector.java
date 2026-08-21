@@ -69,7 +69,8 @@ public class DatabricksConnector implements MetadataConnector {
   @Override
   public Handle open(@Nonnull ConnectorArguments arguments) throws Exception {
     return new DatabricksHandle(
-        new DatabricksClient(arguments.getUri(), arguments.getPasswordOrPrompt()));
+        new DatabricksClient(
+            arguments.getUri(), arguments.getPasswordOrPrompt(), arguments.getWarehouse()));
   }
 
   @Nonnull

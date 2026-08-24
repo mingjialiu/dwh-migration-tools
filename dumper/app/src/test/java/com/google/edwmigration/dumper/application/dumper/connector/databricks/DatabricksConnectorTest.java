@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import com.google.edwmigration.dumper.application.dumper.ConnectorArguments;
 import com.google.edwmigration.dumper.application.dumper.task.DumpMetadataTask;
 import com.google.edwmigration.dumper.application.dumper.task.FormatTask;
+import com.google.edwmigration.dumper.application.dumper.task.Task;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -38,15 +39,14 @@ public class DatabricksConnectorTest {
 
     connector.addTasksTo(tasks, new ConnectorArguments("--connector", connector.getName()));
 
-    // Expect at least one DumpMetadataTask and one FormatTask to be present.
+    assertTrue(tasks.stream().map(Task::getName).anyMatch("catalogs.jsonl"::equals));
+    assertTrue(tasks.stream().map(Task::getName).anyMatch("databases.jsonl"::equals));
+    assertTrue(tasks.stream().map(Task::getName).anyMatch("tables-raw.jsonl"::equals));
     assertTrue(
         "Expected at least one DumpMetadataTask",
         tasks.stream().anyMatch(task -> task instanceof DumpMetadataTask));
     assertTrue(
         "Expected at least one FormatTask", tasks.stream().anyMatch(task -> task instanceof FormatTask));
-    assertTrue(
-        "Expected Databricks Unity Catalog task",
-        tasks.stream().anyMatch(task -> task instanceof DatabricksCatalogsTask));
 
     // Name should be the known connector name
     assertEquals("databricks", connector.getName());

@@ -26,6 +26,7 @@ import com.google.edwmigration.dumper.application.dumper.connector.ConnectorProp
 import com.google.edwmigration.dumper.application.dumper.handle.Handle;
 import com.google.edwmigration.dumper.application.dumper.task.DumpMetadataTask;
 import com.google.edwmigration.dumper.application.dumper.task.FormatTask;
+import com.google.edwmigration.dumper.application.dumper.task.Task;
 import com.google.edwmigration.dumper.plugin.ext.jdk.annotation.Description;
 import java.time.Clock;
 import java.util.List;
@@ -57,10 +58,12 @@ public class DatabricksConnector implements MetadataConnector {
 
   @Override
   public void addTasksTo(
-      @Nonnull List<? super com.google.edwmigration.dumper.application.dumper.task.Task<?>> out,
+      @Nonnull List<? super Task<?>> out,
       @Nonnull ConnectorArguments arguments)
       throws Exception {
-    out.add(new DatabricksCatalogsTask());
+    out.add(new DatabricksJsonlTask("catalogs.jsonl", DatabricksJsonlTask.Output.CATALOGS));
+    out.add(new DatabricksJsonlTask("databases.jsonl", DatabricksJsonlTask.Output.DATABASES));
+    out.add(new DatabricksJsonlTask("tables-raw.jsonl", DatabricksJsonlTask.Output.TABLES));
     out.add(new DumpMetadataTask(getName()));
     out.add(new FormatTask(getName()));
   }

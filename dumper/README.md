@@ -53,5 +53,4 @@ the SQL warehouse. The output JSONL identifies legacy tables with
 `catalog: "hive_metastore"`; for example,
 `hive_metastore.default.example_table`.
 
-
 [BQMS]: https://cloud.google.com/bigquery/docs/migration-intro
